@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wisata Semarang Pro</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI, sans-serif;
+    scroll-behavior:smooth;
+}
+
+body{
+    background:#f4f6f9;
+}
+
+/* NAVBAR */
+nav{
+    background:#0d47a1;
+    padding:15px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:white;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+nav ul{
+    display:flex;
+    list-style:none;
+    gap:20px;
+}
+
+nav ul li a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+nav ul li a:hover{
+    text-decoration:underline;
+}
+
+/* SLIDER */
+.slider{
+    height:300px;
+    position:relative;
+    overflow:hidden;
+}
+
+.slide{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background-size:cover;
+    background-position:center;
+    opacity:0;
+    transition:1s;
+}
+
+.slide.active{
+    opacity:1;
+}
+
+.hero-text{
+    position:absolute;
+    width:100%;
+    text-align:center;
+    top:50%;
+    transform:translateY(-50%);
+    color:white;
+    background:rgba(0,0,0,0.5);
+    padding:15px;
+}
+
+/* CONTAINER */
+.container{
+    width:70%;
+    margin:40px auto;
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+label{
+    font-weight:bold;
+    margin-top:15px;
+    display:block;
+}
+
+input,select{
+    width:100%;
+    padding:8px;
+    margin-top:5px;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+
+.row{
+    display:flex;
+    gap:15px;
+}
+
+.row div{
+    flex:1;
+}
+
+button{
+    margin-top:20px;
+    padding:12px;
+    width:100%;
+    background:#0d47a1;
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#08306b;
+}
+
+/* TOAST */
+.toast{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    background:#2e7d32;
+    color:white;
+    padding:15px 20px;
+    border-radius:8px;
+    opacity:0;
+    transition:0.5s;
+}
+
+.toast.show{
+    opacity:1;
+}
+
+/* FOOTER */
+footer{
+    background:#0d47a1;
+    color:white;
+    text-align:center;
+    padding:15px;
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+    <h2>Wisata Semarang</h2>
+    <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#reservasi">Reservasi</a></li>
+    </ul>
+</nav>
+
+<section class="slider" id="home">
+    <div class="slide active" style="background-image:url('https://images.unsplash.com/photo-1589308078059-be1415eab4c3');"></div>
+    <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1603366615917-1fa6dad5c4fa');"></div>
+    <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1576678927484-cc907957088c');"></div>
+    <div class="hero-text">
+        <h1>Reservasi Paket Wisata Semarang</h1>
+    </div>
+</section>
+
+<div class="container" id="reservasi">
+<form onsubmit="return validasiForm()">
+
+<input type="hidden" value="SMG2026TRAVEL">
+
+<label>PIN Akses (6 Digit)</label>
+<input type="password" id="pin" maxlength="6" required>
+
+<label>Meeting Point</label>
+<select required>
+<option value="">-- Pilih Lokasi --</option>
+<option>Bandara Ahmad Yani</option>
+<option>Stasiun Tawang</option>
+<option>Simpang Lima</option>
+</select>
+
+<label>Cari Paket</label>
+<input type="search" placeholder="Contoh: Kota Lama">
+
+<div class="row">
+<div>
+<label>Tanggal</label>
+<input type="date" required>
+</div>
+<div>
+<label>Jam</label>
+<input type="time" required>
+</div>
+</div>
+
+<label>Jumlah Peserta (1-20)</label>
+<input type="number" id="peserta" min="1" max="20" required>
+
+<label>Link Media Sosial</label>
+<input type="url" required>
+
+<label>Warna Kaos Grup</label>
+<input type="color">
+
+<label>Metode Pembayaran</label>
+<input type="radio" name="bayar" required> Full
+<input type="radio" name="bayar"> DP 50%
+
+<label>Upload KTP/Paspor</label>
+<input type="file" required>
+
+<button type="submit">Kirim Reservasi</button>
+
+</form>
+</div>
+
+<div class="toast" id="toast">Reservasi berhasil dikirim 🎉</div>
+
+<footer>
+© 2026 Web Wisata Semarang 
+</footer>
+
+<script>
+/* SLIDER OTOMATIS */
+let slides=document.querySelectorAll(".slide");
+let index=0;
+
+setInterval(()=>{
+slides[index].classList.remove("active");
+index=(index+1)%slides.length;
+slides[index].classList.add("active");
+},3000);
+
+/* VALIDASI */
+function validasiForm(){
+let pin=document.getElementById("pin").value;
+let peserta=document.getElementById("peserta").value;
+
+if(pin.length!=6 || isNaN(pin)){
+alert("PIN harus 6 digit angka!");
+return false;
+}
+
+if(peserta<1 || peserta>20){
+alert("Peserta minimal 1 maksimal 20!");
+return false;
+}
+
+let toast=document.getElementById("toast");
+toast.classList.add("show");
+setTimeout(()=>toast.classList.remove("show"),3000);
+
+return false; 
+}
+</script>
+
+</body>
+</html>
